@@ -1,1 +1,1 @@
-# gradle-scripts
+# A collection of gradle scripts to eliminate boilerplate build logic
