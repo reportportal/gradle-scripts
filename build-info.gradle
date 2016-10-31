@@ -1,0 +1,17 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'org.ajoberstar:grgit:1.6.0-rc.1'
+
+    }
+}
+processResources {
+    def grgit = org.ajoberstar.grgit.Grgit.open(dir: '.')
+    def branch = grgit.branch.getCurrent().getName() + '-' + grgit.head().id
+    filesMatching('**/bootstrap.yaml') {
+        filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: [version: project.property("version"),
+                                                                    branch : branch])
+    }
+}
