@@ -14,4 +14,5 @@ processResources {
         filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: [version: project.property("version"),
                                                                     branch : branch])
     }
+    outputs.upToDateWhen { false }
 }
