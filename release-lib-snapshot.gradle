@@ -1,0 +1,16 @@
+artifactory {
+    artifactory {
+        contextUrl = 'https://artifactory.epam.com/artifactory/'
+        publish {
+            repository {
+                repoKey = 'EPMC-TST'
+                username = "${project.properties.artifactoryLogin}"
+                password = "${project.properties.artifactoryPassword}"
+                maven = true
+            }
+            defaults {
+                publications('mavenJava')
+            }
+        }
+    }
+}
