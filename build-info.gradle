@@ -10,7 +10,7 @@ buildscript {
 processResources {
     def grgit = org.ajoberstar.grgit.Grgit.open(dir: '.')
     def branch = grgit.branch.getCurrent().getName() + '-' + grgit.head().id
-    project.property['branch'] = branch
+    project.properties['branch'] = branch
     filesMatching('**/bootstrap.yaml') {
         filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: project.properties.findAll { it.value instanceof String }.collectEntries {
             [it.key, it.value]
