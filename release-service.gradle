@@ -5,7 +5,7 @@ buildscript {
         maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
-        classpath 'org.ajoberstar:grgit:1.6.0-rc.1'
+        classpath 'org.ajoberstar:grgit:1.7.2'
     }
 }
 
@@ -63,10 +63,6 @@ bintray {
     }
 }
 
-ext {
-    grgit = org.ajoberstar.grgit.Grgit.open(dir: '.')
-}
-
 task releaseDockerfile(type: Copy) {
     /* copy dockerfile and replace version of JAR */
     from('docker/Dockerfile-release')
@@ -80,10 +76,14 @@ task releaseDockerfile(type: Copy) {
 }
 
 task addDockerfileToGit << {
+    grgit = org.ajoberstar.grgit.Grgit.open(dir: '.')
+
     grgit.add(patterns: ['Dockerfile'])
 }
 
 task removeDockerfileFromGit << {
+    grgit = org.ajoberstar.grgit.Grgit.open(dir: '.')
+
     grgit.remove(patterns: ['Dockerfile'])
 }
 

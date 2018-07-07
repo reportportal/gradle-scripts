@@ -3,25 +3,31 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'org.ajoberstar:grgit:1.6.0-rc.1'
+        classpath 'org.ajoberstar:grgit:1.7.2'
 
     }
 }
-processResources {
-    def grgit = org.ajoberstar.grgit.Grgit.open(dir: '.')
-    def branch = grgit.branch.getCurrent().getName() + '-' + grgit.head().id
-    def repo = grgit.remote.list().collect { remote ->
-        def url = remote.url
-        def gitPostfix = url.indexOf(".git")
-        return url.substring(url.indexOf(":") + 1, gitPostfix == -1 ? url.length() : gitPostfix)
-    }.unique(false).getAt(0)
 
-    project.properties.ext.set("branch", branch)
-    project.properties.ext.set("repo", repo)
-    filesMatching('**/bootstrap.yaml') {
-        filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: project.properties.findAll { it.value instanceof String }.collectEntries {
-            [it.key, it.value]
-        })
+task gitInfo(type: Copy) {
+    doLast {
+        def grgit = org.ajoberstar.grgit.Grgit.open(dir: '.')
+        def branch = grgit.branch.getCurrent().getName() + '-' + grgit.head().id
+        def repo = grgit.remote.list().collect { remote ->
+            def url = remote.url
+            def gitPostfix = url.indexOf(".git")
+            return url.substring(url.indexOf(":") + 1, gitPostfix == -1 ? url.length() : gitPostfix)
+        }.unique(false).getAt(0)
+
+        project.properties.ext.set("branch", branch)
+        project.properties.ext.set("repo", repo)
+        filesMatching('**/bootstrap.yaml') {
+            filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: project.properties.findAll {
+                it.value instanceof String
+            }.collectEntries {
+                [it.key, it.value]
+            })
+        }
+        outputs.upToDateWhen { false }
     }
-    outputs.upToDateWhen { false }
+
 }
