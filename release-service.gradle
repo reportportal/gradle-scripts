@@ -87,23 +87,6 @@ task removeDockerfileFromGit << {
     grgit.remove(patterns: ['Dockerfile'])
 }
 
-task resolveDependencies {
-    doLast {
-        rootProject.allprojects { project ->
-            project.buildscript.configurations.forEach { configuration ->
-                if (configuration.isCanBeResolved()) {
-                    configuration.resolve()
-                }
-            }
-
-            project.configurations.forEach { configuration ->
-                if (configuration.isCanBeResolved()) {
-                    configuration.resolve()
-                }
-            }
-        }
-    }
-}
 
 addDockerfileToGit.dependsOn releaseDockerfile
 updateVersion.dependsOn removeDockerfileFromGit
