@@ -9,8 +9,6 @@ buildscript {
     }
 }
 
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
 apply from: 'release-commons.gradle'
 
 task releaseDockerfile(type: Copy) {
