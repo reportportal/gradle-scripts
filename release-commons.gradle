@@ -1,13 +1,19 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        jcenter()
-        maven { url "https://plugins.gradle.org/m2/" }
-    }
-    dependencies {
-        classpath 'org.ajoberstar:grgit:1.7.2'
-    }
-}
+/*
+ * Copyright 2019 EPAM Systems
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
@@ -62,7 +68,6 @@ bintray {
     user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
     key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
     publications = ['mavenJava']
-    publish = true
     pkg {
         repo = 'reportportal'
         name = "$project.name"
@@ -78,32 +83,4 @@ bintray {
     }
 }
 
-task releaseDockerfile(type: Copy) {
-    /* copy dockerfile and replace version of JAR */
-    from('docker/Dockerfile-release')
-
-    filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: project.properties.findAll { it.value instanceof String }.collectEntries {
-        [it.key, it.value]
-    })
-
-    into "${project.projectDir}/"
-    rename('Dockerfile-release', 'Dockerfile')
-}
-
-task addDockerfileToGit << {
-    grgit = org.ajoberstar.grgit.Grgit.open(dir: '.')
-
-    grgit.add(patterns: ['Dockerfile'])
-}
-
-task removeDockerfileFromGit << {
-    grgit = org.ajoberstar.grgit.Grgit.open(dir: '.')
-
-    grgit.remove(patterns: ['Dockerfile'])
-}
-
-
-addDockerfileToGit.dependsOn releaseDockerfile
-updateVersion.dependsOn removeDockerfileFromGit
-beforeReleaseBuild.dependsOn addDockerfileToGit
 afterReleaseBuild.dependsOn bintrayUpload
