@@ -110,15 +110,17 @@ task releaseDockerfile(type: Copy) {
 }
 
 addDockerfileToGit {
-    grgit = org.ajoberstar.grgit.Grgit.open(dir: '.')
-
-    grgit.add(patterns: ['Dockerfile'])
+    doLast {
+        grgit = org.ajoberstar.grgit.Grgit.open(dir: '.')
+        grgit.add(patterns: ['Dockerfile'])
+    }
 }
 
 removeDockerfileFromGit {
-    grgit = org.ajoberstar.grgit.Grgit.open(dir: '.')
-
-    grgit.remove(patterns: ['Dockerfile'])
+    doLast {
+        grgit = org.ajoberstar.grgit.Grgit.open(dir: '.')
+        grgit.remove(patterns: ['Dockerfile'])
+    }
 }
 
 
