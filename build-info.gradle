@@ -20,7 +20,7 @@ task gitInfo(type: Copy) {
 
         project.properties.ext.set("branch", branch)
         project.properties.ext.set("repo", repo)
-        filesMatching('**/bootstrap.yaml') {
+        filesMatching('**/application.yaml') {
             filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: project.properties.findAll {
                 it.value instanceof String
             }.collectEntries {
