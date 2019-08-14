@@ -20,6 +20,12 @@ task gitInfo(type: Copy) {
     project.properties.ext.set("branch", branch)
     project.properties.ext.set("repo", repo)
 
+    buildNumber = project.getProperty("buildNumber")
+    if (project.hasProperty("buildNumber")) {
+        project.version = "$project.version#$buildNumber"
+    }
+
+
     from('src/main/resources') {
         filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: project.properties.findAll {
             it.value instanceof String
