@@ -20,9 +20,8 @@ task gitInfo(type: Copy) {
     project.properties.ext.set("branch", branch)
     project.properties.ext.set("repo", repo)
 
-    buildNumber = project.getProperty("buildNumber")
     if (project.hasProperty("buildNumber")) {
-        project.version = "$project.version#$buildNumber"
+        project.version = "$project.version#$project.getProperty("buildNumber")"
     }
 
 
