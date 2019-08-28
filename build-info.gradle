@@ -24,7 +24,7 @@ task gitInfo() {
             project.properties.ext.set("branch", branch)
             project.properties.ext.set("repo", repo)
 
-            if (project.hasProperty("buildNumber")) {
+            if (project.hasProperty("buildNumber") && project.buildNumber?.trim()) {
                 project['version'] = "$project.version-$project.buildNumber".toString()
             }
 
