@@ -1,19 +1,4 @@
-/*
- * Copyright 2019 EPAM Systems
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+import org.apache.tools.ant.filters.ReplaceTokens
 
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
@@ -28,7 +13,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     getArchiveClassifier().set('javadoc')
 }
 
-javadoc() {
+javadoc {
     failOnError = false
 }
 
@@ -40,9 +25,9 @@ artifacts {
 def pomConfig = {
     licenses {
         license {
-            name "The Apache Software License, Version 2.0"
-            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            distribution "repo"
+            name = "The Apache Software License, Version 2.0"
+            url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            distribution = "repo"
         }
     }
 }
@@ -84,14 +69,11 @@ bintray {
     }
 }
 
-afterReleaseBuild.dependsOn bintrayUpload
-
-
 task releaseDockerfile(type: Copy) {
     /* copy dockerfile and replace version of JAR */
     from('docker/Dockerfile-release')
 
-    filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: project.properties.findAll { it.value instanceof String }.collectEntries {
+    filter(ReplaceTokens, tokens: project.properties.findAll { it.value instanceof String }.collectEntries {
         [it.key, it.value]
     })
 
@@ -112,7 +94,6 @@ task removeDockerfileFromGit {
         grgit.remove(patterns: ['Dockerfile'])
     }
 }
-
 
 addDockerfileToGit.dependsOn releaseDockerfile
 updateVersion.dependsOn removeDockerfileFromGit

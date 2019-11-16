@@ -1,16 +1,5 @@
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'org.ajoberstar:grgit:1.7.2'
-
-    }
-}
-
 task gitInfo() {
 //    outputs.upToDateWhen { false }
-
     doLast {
         copy {
             def grgit = org.ajoberstar.grgit.Grgit.open(dir: project.projectDir.toString())
@@ -28,7 +17,6 @@ task gitInfo() {
                 project['version'] = "$project.version-$project.buildNumber".toString()
             }
 
-
             from('src/main/resources') {
                 include '**/application.yaml'
 
@@ -41,9 +29,6 @@ task gitInfo() {
                 filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: tokens)
             }
             into "$buildDir/resources/main"
-
         }
-
     }
-
 }
