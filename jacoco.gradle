@@ -1,5 +1,3 @@
-build.dependsOn jacocoTestReport
-
 jacocoTestReport {
     reports {
         xml.enabled true
@@ -58,3 +56,5 @@ jacocoTestReport {
         }
     }
 }
+
+build.dependsOn jacocoTestReport

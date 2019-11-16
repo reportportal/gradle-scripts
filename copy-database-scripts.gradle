@@ -16,3 +16,6 @@ task removeScripts {
         }
     }
 }
+
+checkCommitNeeded.dependsOn removeScripts
+test.dependsOn copyTestDatabaseScripts
