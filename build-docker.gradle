@@ -1,48 +1,38 @@
 buildscript {
     repositories {
-        mavenCentral()
-        jcenter()
+        gradlePluginPortal()
     }
     dependencies {
-        classpath 'com.bmuschko:gradle-docker-plugin:3.0.12'
-
+        classpath 'com.bmuschko:gradle-docker-plugin:6.0.0'
     }
 }
 
-apply plugin: com.bmuschko.gradle.docker.DockerRemoteApiPlugin
-
-project.ext {
-    isDebugMode = System.getProperty("DEBUG", "false") == "true"
-}
-
-//DOCKER
+apply plugin: 'com.bmuschko.docker-remote-api'
 
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import org.apache.tools.ant.filters.ReplaceTokens
 
 docker {
-    url = "${dockerServerUrl}"
+    url.set("${dockerServerUrl}")
 }
 
 def dockerProjectName = "reportportal-dev/${project.name}".toLowerCase()
-
-
 
 task prepareDockerfile(type: Copy) {
     /* copy dockerfile and replace version of JAR */
     def dockerFileName = isDebugMode ? "Dockerfile-test" : "Dockerfile-develop"
     from "docker/${dockerFileName}"
     into "${project.buildDir}/libs"
-    filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: project.properties.findAll { it.value instanceof String }.collectEntries {
+    filter(ReplaceTokens, tokens: project.properties.findAll { it.value instanceof String }.collectEntries {
         [it.key, it.value]
     })
     rename(dockerFileName, 'Dockerfile')
 }
 
 task buildDocker(type: DockerBuildImage, dependsOn: prepareDockerfile) {
-    inputDir = file("${project.buildDir}/libs")
-    tag = "${dockerProjectName}:latest"
+    inputDir.set(file("${project.buildDir}/libs"))
+    images.add("${dockerProjectName}:latest")
 }
-
 
 prepareDockerfile.dependsOn build
 buildDocker.dependsOn prepareDockerfile

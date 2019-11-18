@@ -1,0 +1,21 @@
+task copyTestDatabaseScripts {
+    doLast {
+        for (s in testScriptsSrc) {
+            download {
+                src s.key
+                dest new File("${projectDir}/src/test/resources/db/migration/${s.value}")
+            }
+        }
+    }
+}
+
+task removeScripts {
+    doLast {
+        for (s in testScriptsSrc) {
+            new File("${projectDir}/src/test/resources/db/migration/${s.value}").delete()
+        }
+    }
+}
+
+checkCommitNeeded.dependsOn removeScripts
+test.dependsOn copyTestDatabaseScripts
