@@ -1,34 +1,19 @@
 task gitInfo() {
 //    outputs.upToDateWhen { false }
     doLast {
-        copy {
-            def grgit = org.ajoberstar.grgit.Grgit.open(dir: project.projectDir.toString())
-            def branch = grgit.branch.getCurrent().getName() + '-' + grgit.head().id
-            def repo = grgit.remote.list().collect { remote ->
-                def url = remote.url
-                def gitPostfix = url.indexOf(".git")
-                return url.substring(url.indexOf(":") + 1, gitPostfix == -1 ? url.length() : gitPostfix)
-            }.unique(false).getAt(0)
+        def grgit = org.ajoberstar.grgit.Grgit.open(dir: project.projectDir.toString())
+        def branch = grgit.branch.getCurrent().getName() + '-' + grgit.head().id
+        def repo = grgit.remote.list().collect { remote ->
+            def url = remote.url
+            def gitPostfix = url.indexOf(".git")
+            return url.substring(url.indexOf(":") + 1, gitPostfix == -1 ? url.length() : gitPostfix)
+        }.unique(false).getAt(0)
 
-            project.properties.ext.set("branch", branch)
-            project.properties.ext.set("repo", repo)
+        project.properties.ext.set("branch", branch)
+        project.properties.ext.set("repo", repo)
 
-            if (project.hasProperty("buildNumber") && project.buildNumber?.trim()) {
-                project['version'] = "$project.version-$project.buildNumber".toString()
-            }
-
-            from('src/main/resources') {
-                include '**/application.yaml'
-
-                def tokens = project.properties.findAll {
-                    it.value instanceof String
-                }.collectEntries {
-                    [(it.key): it.value]
-                }
-                println("$tokens")
-                filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: tokens)
-            }
-            into "$buildDir/resources/main"
+        if (project.hasProperty("buildNumber") && project.buildNumber?.trim()) {
+            project['version'] = "$project.version-$project.buildNumber".toString()
         }
     }
 }
