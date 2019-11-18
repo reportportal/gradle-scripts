@@ -1,7 +1,22 @@
+import org.ajoberstar.grgit.Grgit
+
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "org.ajoberstar.grgit:grgit-gradle:4.0.0"
+    }
+}
+
+apply plugin: "org.ajoberstar.grgit"
+
 task gitInfo() {
 //    outputs.upToDateWhen { false }
     doLast {
-        def grgit = org.ajoberstar.grgit.Grgit.open(dir: project.projectDir.toString())
+        def grgit = Grgit.open(dir: project.projectDir.toString())
         def branch = grgit.branch.getCurrent().getName() + '-' + grgit.head().id
         def repo = grgit.remote.list().collect { remote ->
             def url = remote.url
