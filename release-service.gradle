@@ -47,6 +47,10 @@ def pomConfig = {
     }
 }
 
+release {
+    pushReleaseVersionBranch = 'master'
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -109,11 +113,3 @@ task removeDockerfileFromGit {
         grgit.remove(patterns: ['Dockerfile'])
     }
 }
-
-checkCommitNeeded.dependsOn removeScripts
-test.dependsOn copyTestDatabaseScripts
-
-addDockerfileToGit.dependsOn releaseDockerfile
-updateVersion.dependsOn removeDockerfileFromGit
-beforeReleaseBuild.dependsOn addDockerfileToGit
-afterReleaseBuild.dependsOn bintrayUpload

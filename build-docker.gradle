@@ -34,6 +34,5 @@ task buildDocker(type: DockerBuildImage, dependsOn: prepareDockerfile) {
     images.add("${dockerProjectName}:latest")
 }
 
-prepareDockerfile.dependsOn build
-buildDocker.dependsOn prepareDockerfile
+
 

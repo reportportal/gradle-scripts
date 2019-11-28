@@ -82,4 +82,4 @@ bintray {
     }
 }
 
-afterReleaseBuild.dependsOn bintrayUpload
+
