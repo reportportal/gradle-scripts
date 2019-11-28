@@ -1,7 +1,22 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4"
+        classpath "net.researchgate:gradle-release:2.8.1"
+    }
+}
+
+apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
+apply plugin: com.jfrog.bintray.gradle.BintrayPlugin
+apply plugin: net.researchgate.release.ReleasePlugin
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.allSource
@@ -94,6 +109,9 @@ task removeDockerfileFromGit {
         grgit.remove(patterns: ['Dockerfile'])
     }
 }
+
+checkCommitNeeded.dependsOn removeScripts
+test.dependsOn copyTestDatabaseScripts
 
 addDockerfileToGit.dependsOn releaseDockerfile
 updateVersion.dependsOn removeDockerfileFromGit

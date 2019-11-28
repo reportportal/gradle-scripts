@@ -1,3 +1,14 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "de.undercouch:gradle-download-task:4.0.2"
+    }
+}
+
+apply plugin: de.undercouch.gradle.tasks.download.DownloadTaskPlugin
+
 task copyTestDatabaseScripts {
     doLast {
         for (s in testScriptsSrc) {
@@ -16,6 +27,3 @@ task removeScripts {
         }
     }
 }
-
-checkCommitNeeded.dependsOn removeScripts
-test.dependsOn copyTestDatabaseScripts
