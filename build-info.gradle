@@ -11,7 +11,7 @@ buildscript {
     }
 }
 
-apply plugin: "org.ajoberstar.grgit"
+apply plugin: org.ajoberstar.grgit.gradle.GrgitPlugin
 
 task gitInfo() {
 //    outputs.upToDateWhen { false }

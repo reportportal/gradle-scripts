@@ -7,7 +7,7 @@ buildscript {
     }
 }
 
-apply plugin: 'com.bmuschko.docker-remote-api'
+apply plugin: com.bmuschko.gradle.docker.DockerRemoteApiPlugin
 
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import org.apache.tools.ant.filters.ReplaceTokens
