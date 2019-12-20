@@ -15,7 +15,6 @@
  */
 
 import org.apache.tools.ant.filters.ReplaceTokens
-import org.ajoberstar.grgit.Grgit
 
 buildscript {
     repositories {
@@ -119,14 +118,14 @@ task releaseDockerfile(type: Copy) {
 
 task addDockerfileToGit {
     doLast {
-        grgit = Grgit.open(dir: '.')
+        grgit = org.ajoberstar.grgit.Grgit.open(dir: '.')
         grgit.add(patterns: ['Dockerfile'])
     }
 }
 
 task removeDockerfileFromGit {
     doLast {
-        grgit = Grgit.open(dir: '.')
+        grgit = org.ajoberstar.grgit.Grgit.open(dir: '.')
         grgit.remove(patterns: ['Dockerfile'])
     }
 }
