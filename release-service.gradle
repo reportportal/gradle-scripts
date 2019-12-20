@@ -115,17 +115,3 @@ task releaseDockerfile(type: Copy) {
     into "${project.projectDir}/"
     rename('Dockerfile-release', 'Dockerfile')
 }
-
-task addDockerfileToGit {
-    doLast {
-        grgit = org.ajoberstar.grgit.Grgit.open(dir: '.')
-        grgit.add(patterns: ['Dockerfile'])
-    }
-}
-
-task removeDockerfileFromGit {
-    doLast {
-        grgit = org.ajoberstar.grgit.Grgit.open(dir: '.')
-        grgit.remove(patterns: ['Dockerfile'])
-    }
-}
