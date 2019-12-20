@@ -51,14 +51,18 @@ task gitInfo() {
 
 task addDockerfileToGit {
     doLast {
-        grgit = Grgit.open(dir: '.')
-        grgit.add(patterns: ['Dockerfile'])
+        grgit = Grgit.open(dir: project.projectDir.toString())
+        grgit.add {
+            patterns = ['Dockerfile']
+        }
     }
 }
 
 task removeDockerfileFromGit {
     doLast {
-        grgit = Grgit.open(dir: '.')
-        grgit.remove(patterns: ['Dockerfile'])
+        grgit = Grgit.open(dir: project.projectDir.toString())
+        grgit.remove {
+            patterns = ['Dockerfile']
+        }
     }
 }
