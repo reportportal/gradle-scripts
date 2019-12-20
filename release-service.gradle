@@ -80,6 +80,7 @@ publishing {
             }
             artifact sourcesJar
             artifact javadocJar
+            artifact bootJar
         }
     }
 }
