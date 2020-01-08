@@ -34,7 +34,7 @@ docker {
 }
 
 def isRelease = project.hasProperty('registryRelease')
-def devPostfix = isRelease ? '' : '-dev-5'
+def devPostfix = isRelease ? '' : '-dev'
 def imageVersion = isRelease ? "$version" : 'latest'
 def dockerProjectName = "reportportal${devPostfix}/${project.name}".toLowerCase()
 def maintainer = 'Andrei Varabyeu <andrei_varabyeu@epam.com>'
@@ -88,7 +88,7 @@ task createDockerfile(type: Dockerfile) {
     environmentVariable(
             ['JAVA_OPTS'       : project.hasProperty('dockerJavaOpts') ? dockerJavaOpts : '',
              'ARTIFACT'        : artifact,
-             'APP_DOWNLOAD_URL': "https://dl.bintray.com/ihar-kahadouski/reportportal/com/epam/reportportal/${project.name}/${project.version}/${artifact}"]
+             'APP_DOWNLOAD_URL': "https://dl.bintray.com/epam/reportportal/com/epam/reportportal/${project.name}/${project.version}/${artifact}"]
     )
     runCommand('sh -c "echo $\'#!/bin/sh \\n\\\n' +
             'exec java $JAVA_OPTS -jar $ARTIFACT\' > /start.sh && chmod +x /start.sh"')
