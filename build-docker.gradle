@@ -25,29 +25,84 @@ buildscript {
 
 apply plugin: com.bmuschko.gradle.docker.DockerRemoteApiPlugin
 
+
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
-import org.apache.tools.ant.filters.ReplaceTokens
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 
 docker {
-    url.set("${dockerServerUrl}")
+    url.set(dockerServerUrl)
 }
 
-def dockerProjectName = "reportportal-dev/${project.name}".toLowerCase()
+def isRelease = project.hasProperty('registryRelease')
+def devPostfix = isRelease ? '' : '-dev'
+def imageVersion = isRelease ? "$version" : 'latest'
+def dockerProjectName = "reportportal${devPostfix}/${project.name}".toLowerCase()
+def maintainer = 'Andrei Varabyeu <andrei_varabyeu@epam.com>'
 
-task prepareDockerfile(type: Copy) {
-    /* copy dockerfile and replace version of JAR */
-    def dockerFileName = isDebugMode ? "Dockerfile-test" : "Dockerfile-develop"
-    from "docker/${dockerFileName}"
-    into "${project.buildDir}/libs"
-    filter(ReplaceTokens, tokens: project.properties.findAll { it.value instanceof String }.collectEntries {
-        [it.key, it.value]
-    })
-    rename(dockerFileName, 'Dockerfile')
+task createDockerfileDev(type: Dockerfile) {
+    group = 'docker'
+    dependsOn build
+    def artifact = "$project.name-$project.version-exec.jar"
+    destFile.set(file("${project.buildDir}${File.separator}${project.libsDirName}${File.separator}Dockerfile"))
+
+    from('openjdk:8-jre-alpine')
+    label(['version'           : "$project.version",
+           'description'       : "$project.description",
+           'maintainer'        : "$maintainer",
+           'quay.expires-after': '1w']
+    )
+    if (project.hasProperty('dockerPrepareEnvironment') && dockerPrepareEnvironment?.trim()) {
+        runCommand(dockerPrepareEnvironment)
+    }
+    if (project.hasProperty('sealightsSession')) {
+        runCommand('apk add curl unzip && \\\n' +
+                '\tmkdir /plugins && \\\n' +
+                '\tcurl -o /plugins/sealights.zip https://agents.sealights.co/sealights-java/sealights-java-latest.zip && \\\n' +
+                '\tunzip /plugins/sealights.zip -d /plugins && \\\n' +
+                "\techo '${sealightsToken}' > /sealights-token.txt && \\\n" +
+                "\techo '${sealightsSession}' > /sealights-session.txt")
+    }
+
+    environmentVariable(['JAVA_OPTS': project.hasProperty('dockerJavaOptsDev') ? dockerJavaOptsDev : '', 'ARTIFACT': artifact])
+    volume('/tmp')
+    addFile(artifact, artifact)
+    runCommand('sh -c "echo $\'#!/bin/sh \\n\\\n' +
+            'exec java $JAVA_OPTS -jar $ARTIFACT\' > /start.sh && chmod +x /start.sh"')
+    exposePort(8080)
+    entryPoint('/start.sh')
 }
 
-task buildDocker(type: DockerBuildImage, dependsOn: prepareDockerfile) {
-    inputDir.set(file("${project.buildDir}/libs"))
-    images.add("${dockerProjectName}:latest")
+task createDockerfile(type: Dockerfile) {
+    group = 'docker'
+    def artifact = "$project.name-$project.version-exec.jar"
+    destFile.set(file("${project.projectDir}${File.separator}Dockerfile"))
+
+    from('openjdk:8-jre-alpine')
+    label(['version'    : "$project.version",
+           'description': "$project.description",
+           'maintainer' : "$maintainer"]
+    )
+    if (project.hasProperty('dockerPrepareEnvironment') && dockerPrepareEnvironment?.trim()) {
+        runCommand(dockerPrepareEnvironment)
+    }
+    environmentVariable(
+            ['JAVA_OPTS'       : project.hasProperty('dockerJavaOpts') ? dockerJavaOpts : '',
+             'ARTIFACT'        : artifact,
+             'APP_DOWNLOAD_URL': "https://dl.bintray.com/epam/reportportal/com/epam/reportportal/${project.name}/${project.version}/${artifact}"]
+    )
+    runCommand('sh -c "echo $\'#!/bin/sh \\n\\\n' +
+            'exec java $JAVA_OPTS -jar $ARTIFACT\' > /start.sh && chmod +x /start.sh"')
+    volume('/tmp')
+    runCommand('wget $APP_DOWNLOAD_URL')
+    exposePort(8080)
+    entryPoint('/start.sh')
+}
+
+task buildDocker(type: DockerBuildImage) {
+    group = 'docker'
+    releaseMode ? dependsOn(createDockerfile) : dependsOn(createDockerfileDev)
+    inputDir.set(file("${project.buildDir}${File.separator}${libsDirName}"))
+    project.hasProperty('dockerTag') ? images.add(dockerTag) : images.add("${dockerProjectName}:$imageVersion")
 }
 
 
