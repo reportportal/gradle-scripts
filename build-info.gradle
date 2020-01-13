@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import org.ajoberstar.grgit.Grgit
-
 buildscript {
     repositories {
         maven {
@@ -28,6 +26,8 @@ buildscript {
 }
 
 apply plugin: org.ajoberstar.grgit.gradle.GrgitPlugin
+
+import org.ajoberstar.grgit.Grgit
 
 task gitInfo() {
 //    outputs.upToDateWhen { false }
@@ -45,6 +45,22 @@ task gitInfo() {
 
         if (project.hasProperty("buildNumber") && project.buildNumber?.trim()) {
             project['version'] = "$project.version-$project.buildNumber".toString()
+        }
+    }
+}
+
+task addDockerfileToGit {
+    doLast {
+        grgit.add {
+            patterns = ['Dockerfile']
+        }
+    }
+}
+
+task removeDockerfileFromGit {
+    doLast {
+        grgit.remove {
+            patterns = ['Dockerfile']
         }
     }
 }

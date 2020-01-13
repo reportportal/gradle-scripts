@@ -56,9 +56,9 @@ artifacts {
 def pomConfig = {
     licenses {
         license {
-            name = "The Apache Software License, Version 2.0"
-            url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            distribution = "repo"
+            name "The Apache Software License, Version 2.0"
+            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            distribution "repo"
         }
     }
 }
@@ -80,6 +80,7 @@ publishing {
             }
             artifact sourcesJar
             artifact javadocJar
+            artifact bootJar
         }
     }
 }
@@ -114,18 +115,4 @@ task releaseDockerfile(type: Copy) {
 
     into "${project.projectDir}/"
     rename('Dockerfile-release', 'Dockerfile')
-}
-
-task addDockerfileToGit {
-    doLast {
-        grgit = grgit.open(dir: '.')
-        grgit.add(patterns: ['Dockerfile'])
-    }
-}
-
-task removeDockerfileFromGit {
-    doLast {
-        grgit = grgit.open(dir: '.')
-        grgit.remove(patterns: ['Dockerfile'])
-    }
 }
