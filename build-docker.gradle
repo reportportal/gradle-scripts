@@ -25,7 +25,6 @@ buildscript {
 
 apply plugin: com.bmuschko.gradle.docker.DockerRemoteApiPlugin
 
-
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 
@@ -38,13 +37,13 @@ def imageVersion = releaseMode ? "$version" : 'latest'
 def dockerProjectName = "reportportal${devPostfix}/${project.name}".toLowerCase()
 def maintainer = 'Andrei Varabyeu <andrei_varabyeu@epam.com>'
 
-task createDockerfileDev(type: Dockerfile) {
+task createDockerfileDev(type: Dockerfile) {9
     group = 'docker'
     dependsOn build
     def artifact = "$project.name-$project.version-exec.jar"
     destFile.set(file("${project.buildDir}${File.separator}${project.libsDirName}${File.separator}Dockerfile"))
 
-    from('adoptopenjdk:11-jdk-hotspot-bionic')
+    from('openjdk:11-jre-slim')
     label(['version'           : "$project.version",
            'description'       : "$project.description",
            'maintainer'        : "$maintainer",
@@ -54,7 +53,7 @@ task createDockerfileDev(type: Dockerfile) {
         runCommand(dockerPrepareEnvironment)
     }
     if (project.hasProperty('sealightsSession')) {
-        runCommand('apt-get install unzip && \\\n' +
+        runCommand('apt-get install -qq unzip && \\\n' +
                 '\tmkdir /plugins && \\\n' +
                 '\tcurl -o /plugins/sealights.zip https://agents.sealights.co/sealights-java/sealights-java-latest.zip && \\\n' +
                 '\tunzip /plugins/sealights.zip -d /plugins && \\\n' +
@@ -65,10 +64,9 @@ task createDockerfileDev(type: Dockerfile) {
     environmentVariable(['JAVA_OPTS': project.hasProperty('dockerJavaOptsDev') ? dockerJavaOptsDev : '', 'ARTIFACT': artifact])
     volume('/tmp')
     addFile(artifact, artifact)
-    runCommand('sh -c "echo $\'#!/bin/sh \\n\\\n' +
-            'exec java $JAVA_OPTS -jar $ARTIFACT\' > /start.sh && chmod +x /start.sh"')
+    runCommand('echo $\'exec java $JAVA_OPTS -jar $ARTIFACT\' > /start.sh && chmod +x /start.sh')
     exposePort(8080)
-    entryPoint('/start.sh')
+    instruction('ENTRYPOINT ./start.sh')
 }
 
 task createDockerfile(type: Dockerfile) {
@@ -89,12 +87,11 @@ task createDockerfile(type: Dockerfile) {
              'ARTIFACT'        : artifact,
              'APP_DOWNLOAD_URL': "https://dl.bintray.com/epam/reportportal/com/epam/reportportal/${project.name}/${project.version}/${artifact}"]
     )
-    runCommand('sh -c "echo $\'#!/bin/sh \\n\\\n' +
-            'exec java $JAVA_OPTS -jar $ARTIFACT\' > /start.sh && chmod +x /start.sh"')
+    runCommand('echo $\'exec java $JAVA_OPTS -jar $ARTIFACT\' > /start.sh && chmod +x /start.sh')
     volume('/tmp')
     runCommand('wget $APP_DOWNLOAD_URL')
     exposePort(8080)
-    entryPoint('/start.sh')
+    instruction('ENTRYPOINT ./start.sh')
 }
 
 task buildDocker(type: DockerBuildImage) {
