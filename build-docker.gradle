@@ -44,7 +44,7 @@ task createDockerfileDev(type: Dockerfile) {
     def artifact = "$project.name-$project.version-exec.jar"
     destFile.set(file("${project.buildDir}${File.separator}${project.libsDirName}${File.separator}Dockerfile"))
 
-    from('openjdk:8-jre-alpine')
+    from('adoptopenjdk:11-jdk-hotspot-bionic')
     label(['version'           : "$project.version",
            'description'       : "$project.description",
            'maintainer'        : "$maintainer",
@@ -54,7 +54,7 @@ task createDockerfileDev(type: Dockerfile) {
         runCommand(dockerPrepareEnvironment)
     }
     if (project.hasProperty('sealightsSession')) {
-        runCommand('apk add curl unzip && \\\n' +
+        runCommand('apt-get install unzip && \\\n' +
                 '\tmkdir /plugins && \\\n' +
                 '\tcurl -o /plugins/sealights.zip https://agents.sealights.co/sealights-java/sealights-java-latest.zip && \\\n' +
                 '\tunzip /plugins/sealights.zip -d /plugins && \\\n' +
@@ -76,7 +76,7 @@ task createDockerfile(type: Dockerfile) {
     def artifact = "$project.name-$project.version-exec.jar"
     destFile.set(file("${project.projectDir}${File.separator}Dockerfile"))
 
-    from('openjdk:8-jre-alpine')
+    from('adoptopenjdk:11-jdk-hotspot-bionic')
     label(['version'    : "$project.version",
            'description': "$project.description",
            'maintainer' : "$maintainer"]
