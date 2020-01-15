@@ -76,7 +76,7 @@ task createDockerfile(type: Dockerfile) {
     def artifact = "$project.name-$project.version-exec.jar"
     destFile.set(file("${project.projectDir}${File.separator}Dockerfile"))
 
-    from('adoptopenjdk:11-jdk-hotspot-bionic')
+    from('openjdk:11-jre-slim')
     label(['version'    : "$project.version",
            'description': "$project.description",
            'maintainer' : "$maintainer"]
