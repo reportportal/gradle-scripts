@@ -33,9 +33,8 @@ docker {
     url.set(dockerServerUrl)
 }
 
-def isRelease = project.hasProperty('registryRelease')
-def devPostfix = isRelease ? '' : '-dev'
-def imageVersion = isRelease ? "$version" : 'latest'
+def devPostfix = releaseMode ? '' : '-dev'
+def imageVersion = releaseMode ? "$version" : 'latest'
 def dockerProjectName = "reportportal${devPostfix}/${project.name}".toLowerCase()
 def maintainer = 'Andrei Varabyeu <andrei_varabyeu@epam.com>'
 
