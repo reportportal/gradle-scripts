@@ -43,9 +43,10 @@ task gitInfo() {
         project.properties.ext.set("branch", branch)
         project.properties.ext.set("repo", repo)
 
-        if (project.hasProperty("buildNumber") && project.buildNumber?.trim()) {
-            project['version'] = "$project.version-$project.buildNumber".toString()
-        }
+        def buildDate = new Date().format("yyyyMMdd-HH:mm")
+        def buildNumber = !releaseMode && project.hasProperty("buildNumber") && project.buildNumber?.trim() ? "-$project.buildNumber-$buildDate" : ''
+        project.properties.ext.set('buildNumber', buildNumber)
+
     }
 }
 
