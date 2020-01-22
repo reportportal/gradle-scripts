@@ -32,12 +32,12 @@ docker {
     url.set(dockerServerUrl)
 }
 
-def devPostfix = releaseMode ? '' : '-dev-5-1'
+def devPostfix = releaseMode ? '' : '-dev'
 def imageVersion = releaseMode ? "$version" : 'latest'
 def dockerProjectName = "reportportal${devPostfix}/${project.name}".toLowerCase()
 def maintainer = 'Andrei Varabyeu <andrei_varabyeu@epam.com>'
 
-task createDockerfileDev(type: Dockerfile) {9
+task createDockerfileDev(type: Dockerfile) {
     group = 'docker'
     dependsOn build
     def artifact = "$project.name-$project.version-exec.jar"
