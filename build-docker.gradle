@@ -52,7 +52,7 @@ task createDockerfileDev(type: Dockerfile) {
     if (project.hasProperty('dockerPrepareEnvironment') && dockerPrepareEnvironment?.trim()) {
         runCommand(dockerPrepareEnvironment)
     }
-    if (project.hasProperty('sealightsSession')) {
+    if (project.hasProperty('sealightsSession') && !project.getProperty('sealightsSession').isEmpty()) {
         runCommand('apt-get install -qq unzip && \\\n' +
                 '\tmkdir /plugins && \\\n' +
                 '\tcurl -o /plugins/sealights.zip https://agents.sealights.co/sealights-java/sealights-java-latest.zip && \\\n' +
