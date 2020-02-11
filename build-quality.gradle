@@ -13,16 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-apply plugin: 'findbugs'
-
-findbugs {
-    sourceSets = [sourceSets.main]
-    reportLevel = "high"
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "com.github.spotbugs:spotbugs-gradle-plugin:3.0.0"
+    }
 }
-tasks.withType(FindBugs) {
+
+apply plugin: com.github.spotbugs.SpotBugsPlugin
+
+spotbugs {
+    toolVersion = '3.1.12'
+    sourceSets = [sourceSets.main]
+    effort = 'max'
+    reportLevel = 'high'
+}
+
+spotbugsMain {
     reports {
-        xml.enabled false
-        html.enabled true
+        html.enabled(true)
+        xml.enabled(false)
     }
 }
