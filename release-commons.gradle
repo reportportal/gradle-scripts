@@ -82,7 +82,7 @@ publishing {
 
     repositories {
         maven {
-            name = "Gradle_scripts_GitHub_Packages"
+            name = "GradleScriptsGitHubPackages"
             url = uri("https://maven.pkg.github.com/reportportal/gradle-scripts")
             credentials {
                 username = githubUserName
