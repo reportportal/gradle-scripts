@@ -63,6 +63,7 @@ def pomConfig = {
 
 project.ext.githubUserName = project.hasProperty('githubUserName') ? githubUserName : ""
 project.ext.githubToken = project.hasProperty('githubToken') ? githubToken : ""
+project.ext.publishRepo = project.hasProperty('publishRepo') ? publishRepo : ""
 
 publishing {
     publications {
@@ -83,7 +84,7 @@ publishing {
     repositories {
         maven {
             name = "GradleScriptsGitHubPackages"
-            url = uri("https://maven.pkg.github.com/reportportal/gradle-scripts")
+            url = uri(publishRepo)
             credentials {
                 username = githubUserName
                 password = githubToken
