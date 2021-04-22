@@ -14,72 +14,11 @@
  * limitations under the License.
  */
 
-buildscript {
-    repositories {
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
-    dependencies {
-        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4"
-        classpath "net.researchgate:gradle-release:2.8.1"
-    }
-}
-
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
-apply plugin: 'java'
-apply plugin: net.researchgate.release.ReleasePlugin
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-    from sourceSets.main.allSource
-    getArchiveClassifier().set('sources')
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    from javadoc.destinationDir
-    getArchiveClassifier().set('javadoc')
-}
-
-javadoc {
-    failOnError = false
-}
-
-artifacts {
-    archives sourcesJar
-    archives javadocJar
-}
-
-def pomConfig = {
-    licenses {
-        license {
-            name "The Apache Software License, Version 2.0"
-            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            distribution "repo"
-        }
-    }
-}
-
 project.ext.githubUserName = project.hasProperty('githubUserName') ? githubUserName : ""
 project.ext.githubToken = project.hasProperty('githubToken') ? githubToken : ""
 project.ext.publishRepo = project.hasProperty('publishRepo') ? publishRepo : ""
 
 publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-            groupId 'com.epam.reportportal'
-            artifactId "$project.name"
-
-            pom.withXml {
-                def root = asNode()
-                root.children().last() + pomConfig
-            }
-            artifact sourcesJar
-            artifact javadocJar
-        }
-    }
-
     repositories {
         maven {
             name = "GradleScriptsGitHubPackages"
