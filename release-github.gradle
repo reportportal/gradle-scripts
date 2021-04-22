@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 EPAM Systems
+ * Copyright 2021 EPAM Systems
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,14 @@
  * limitations under the License.
  */
 
-buildscript {
-    repositories {
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
-    dependencies {
-        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4"
-        classpath "net.researchgate:gradle-release:2.8.1"
-    }
+plugins {
+    id 'com.jfrog.bintray.gradle:gradle-bintray-plugin' version '1.8.4'
+    id 'net.researchgate:gradle-release' version '2.8.1'
 }
 
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'java'
-apply plugin: com.jfrog.bintray.gradle.BintrayPlugin
 apply plugin: net.researchgate.release.ReleasePlugin
 
 task sourcesJar(type: Jar, dependsOn: classes) {
@@ -61,6 +53,10 @@ def pomConfig = {
     }
 }
 
+project.ext.githubUserName = project.hasProperty('githubUserName') ? githubUserName : ""
+project.ext.githubToken = project.hasProperty('githubToken') ? githubToken : ""
+project.ext.publishRepo = project.hasProperty('publishRepo') ? publishRepo : ""
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -77,27 +73,30 @@ publishing {
         }
     }
 
-}
-
-bintray {
-    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
-    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
-    publications = ['mavenJava']
-    publish = true
-    pkg {
-        repo = 'reportportal'
-        name = "$project.name"
-        desc = "$project.description"
-        websiteUrl = 'https://reportportal.github.io/'
-        issueTrackerUrl = "https://github.com/reportportal/$project.name/issues"
-        vcsUrl = "https://github.com/reportportal/$project.name"
-        githubRepo = "reportportal/$project.name"
-        githubReleaseNotesFile = 'CHANGELOG.md'
-
-        userOrg = 'epam'
-        licenses = ['Apache-2.0']
+    repositories {
+        maven {
+            name = "GradleScriptsGitHubPackages"
+            url = uri(publishRepo)
+            credentials {
+                username = githubUserName
+                password = githubToken
+            }
+        }
     }
 }
 
+tasks.create("releaseGithub") {
+    finalizedBy 'release'
+}
+
+releaseGithub {
+    project.ext.set("disableBintray", true)
+}
+
+if (project.hasProperty("disableBintray")) {
+    afterReleaseBuild.dependsOn publish
+} else {
+    afterReleaseBuild.dependsOn bintrayUpload
+}
 
 
