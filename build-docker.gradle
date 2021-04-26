@@ -78,7 +78,8 @@ task createDockerfile(type: Dockerfile) {
     destFile.set(file("${project.projectDir}${File.separator}Dockerfile"))
 
     def command = ''
-    def downloadJarCommand = "wget -q https://dl.bintray.com/epam/reportportal/com/epam/reportportal/${project.name}/${project.version}/${artifact}"
+    def downloadJarCommand = "wget --header=\"Authorization: Bearer \${GH_TOKEN}\" " +
+            " -q https://maven.pkg.github.com/reportportal/${project.name}/com/epam/reportportal/${project.name}/${project.version}/${artifact}"
 
     if (project.hasProperty('dockerPrepareEnvironment') && dockerPrepareEnvironment?.trim()) {
         command = dockerPrepareEnvironment + commandSeparator
