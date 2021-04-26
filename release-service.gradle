@@ -61,6 +61,7 @@ def pomConfig = {
     }
     developers {
         developer {
+            id = 'EPAM Systems'
             name = 'EPAM Systems'
             email = 'support@reportportal.io'
             organization = 'ReportPortal.io'
