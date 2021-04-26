@@ -34,15 +34,3 @@ publishing {
 tasks.create("releaseGithub") {
     finalizedBy 'release'
 }
-
-releaseGithub {
-    project.ext.set("disableBintray", true)
-}
-
-if (project.hasProperty("disableBintray")) {
-    afterReleaseBuild.dependsOn publish
-} else {
-    afterReleaseBuild.dependsOn bintrayUpload
-}
-
-
