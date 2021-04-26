@@ -85,7 +85,7 @@ task createDockerfile(type: Dockerfile) {
     command += githubTokenArg
 
     if (project.hasProperty('dockerPrepareEnvironment') && dockerPrepareEnvironment?.trim()) {
-        command = dockerPrepareEnvironment + commandSeparator
+        command += dockerPrepareEnvironment + commandSeparator
     }
     command += startScriptCommand + commandSeparator + downloadJarCommand
 
