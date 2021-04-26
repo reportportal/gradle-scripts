@@ -82,10 +82,8 @@ task createDockerfile(type: Dockerfile) {
     def downloadJarCommand = "wget --header=\"Authorization: Bearer \${GH_TOKEN}\" " +
             " -q https://maven.pkg.github.com/reportportal/${project.name}/com/epam/reportportal/${project.name}/${project.version}/${artifact}"
 
-    command += githubTokenArg
-
     if (project.hasProperty('dockerPrepareEnvironment') && dockerPrepareEnvironment?.trim()) {
-        command += dockerPrepareEnvironment + commandSeparator
+        command = dockerPrepareEnvironment + commandSeparator
     }
     command += startScriptCommand + commandSeparator + downloadJarCommand
 
