@@ -61,17 +61,16 @@ def pomConfig = {
     }
     developers {
         developer {
-            id = 'EPAM Systems'
-            name = 'EPAM Systems'
-            email = 'support@reportportal.io'
-            organization = 'ReportPortal.io'
-            organizationUrl = 'http://www.reportportal.io'
+            name 'EPAM Systems'
+            email 'support@reportportal.io'
+            organization 'ReportPortal.io'
+            organizationUrl 'http://www.reportportal.io'
         }
     }
     scm {
-        connection = "scm:git:https://github.com/reportportal/${project.name}.git"
-        developerConnection = "scm:git:ssh://git@github.com:reportportal/${project.name}.git"
-        url = "https://github.com/reportportal/${project.name}/tree/master"
+        connection "scm:git:https://github.com/reportportal/${project.name}.git"
+        developerConnection "scm:git:ssh://git@github.com:reportportal/${project.name}.git"
+        url "https://github.com/reportportal/${project.name}/tree/master"
     }
 }
 
@@ -79,7 +78,22 @@ release {
     pushReleaseVersionBranch = 'master'
 }
 
+project.ext.githubUserName = project.hasProperty('githubUserName') ? githubUserName : ""
+project.ext.githubToken = project.hasProperty('githubToken') ? githubToken : ""
+project.ext.publishRepo = project.hasProperty('publishRepo') ? publishRepo : ""
+
 publishing {
+    repositories {
+        maven {
+            name = "Github"
+            url = uri(publishRepo)
+            credentials {
+                username = githubUserName
+                password = githubToken
+            }
+        }
+    }
+
     publications {
         mavenJava(MavenPublication) {
             from components.java
