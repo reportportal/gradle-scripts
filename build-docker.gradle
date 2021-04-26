@@ -78,7 +78,7 @@ task createDockerfile(type: Dockerfile) {
     destFile.set(file("${project.projectDir}${File.separator}Dockerfile"))
 
     def command = ''
-    def githubTokenArg = "ARG GH_TOKEN"
+    def githubTokenArg = "GH_TOKEN"
     def downloadJarCommand = "wget --header=\"Authorization: Bearer \${GH_TOKEN}\" " +
             " -q https://maven.pkg.github.com/reportportal/${project.name}/com/epam/reportportal/${project.name}/${project.version}/${artifact}"
 
