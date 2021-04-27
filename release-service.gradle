@@ -118,3 +118,5 @@ publishing {
         }
     }
 }
+
+afterReleaseBuild.dependsOn publish
