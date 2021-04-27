@@ -80,7 +80,6 @@ project.ext.githubToken = project.hasProperty('githubToken') ? githubToken : ""
 project.ext.publishRepo = project.hasProperty('publishRepo') ? publishRepo : ""
 
 publishing {
-
     repositories {
         maven {
             name = "Github"
