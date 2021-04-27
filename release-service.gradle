@@ -30,7 +30,6 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
-apply plugin: 'signing'
 apply plugin: net.researchgate.release.ReleasePlugin
 
 task sourcesJar(type: Jar, dependsOn: classes) {
@@ -50,13 +49,6 @@ javadoc {
 artifacts {
     archives sourcesJar
     archives javadocJar
-}
-
-signing {
-    def signingKey = project.findProperty('gpgPrivateKey')
-    def signingPassword = project.findProperty('gpgPassphrase')
-    useInMemoryPgpKeys(signingKey, signingPassword)
-    sign publishing.publications
 }
 
 def pomConfig = {
