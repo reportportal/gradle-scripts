@@ -21,7 +21,6 @@ buildscript {
         }
     }
     dependencies {
-        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4"
         classpath "net.researchgate:gradle-release:2.8.1"
     }
 }
@@ -29,7 +28,6 @@ buildscript {
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'java'
-apply plugin: com.jfrog.bintray.gradle.BintrayPlugin
 apply plugin: net.researchgate.release.ReleasePlugin
 
 task sourcesJar(type: Jar, dependsOn: classes) {
@@ -59,9 +57,37 @@ def pomConfig = {
             distribution "repo"
         }
     }
+    developers {
+        developer {
+            name 'EPAM Systems'
+            email 'support@reportportal.io'
+            organization 'ReportPortal.io'
+            organizationUrl 'http://www.reportportal.io'
+        }
+    }
+    scm {
+        connection "scm:git:https://github.com/reportportal/${project.name}.git"
+        developerConnection "scm:git:ssh://git@github.com:reportportal/${project.name}.git"
+        url "https://github.com/reportportal/${project.name}/tree/master"
+    }
 }
 
+project.ext.githubUserName = project.hasProperty('githubUserName') ? githubUserName : ""
+project.ext.githubToken = project.hasProperty('githubToken') ? githubToken : ""
+project.ext.publishRepo = project.hasProperty('publishRepo') ? publishRepo : ""
+
 publishing {
+    repositories {
+        maven {
+            name = "Github"
+            url = uri(publishRepo)
+            credentials {
+                username = githubUserName
+                password = githubToken
+            }
+        }
+    }
+
     publications {
         mavenJava(MavenPublication) {
             from components.java
@@ -76,26 +102,7 @@ publishing {
             artifact javadocJar
         }
     }
+
 }
 
-bintray {
-    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
-    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
-    publications = ['mavenJava']
-    publish = true
-    pkg {
-        repo = 'reportportal'
-        name = "$project.name"
-        desc = "$project.description"
-        websiteUrl = 'https://reportportal.github.io/'
-        issueTrackerUrl = "https://github.com/reportportal/$project.name/issues"
-        vcsUrl = "https://github.com/reportportal/$project.name"
-        githubRepo = "reportportal/$project.name"
-        githubReleaseNotesFile = 'CHANGELOG.md'
-
-        userOrg = 'epam'
-        licenses = ['Apache-2.0']
-    }
-}
-
-
+afterReleaseBuild.dependsOn publish
