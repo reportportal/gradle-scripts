@@ -50,6 +50,10 @@ artifacts {
 }
 
 def pomConfig = {
+    name = "${project.name}"
+    description = "${project.description}"
+    url = "https://github.com/reportportal/${project.name}"
+    packaging = 'jar'
     licenses {
         license {
             name "The Apache Software License, Version 2.0"
