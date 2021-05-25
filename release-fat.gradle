@@ -47,6 +47,8 @@ javadoc {
 }
 
 def pomConfig = {
+    url "https://github.com/reportportal/${project.name}"
+    packaging 'jar'
     licenses {
         license {
             name "The Apache Software License, Version 2.0"
@@ -97,6 +99,11 @@ publishing {
             
             artifact project.tasks.javadocJar
             artifact project.tasks.sourcesJar
+
+            pom {
+                name = "${project.name}"
+                description = "${project.description}"
+            }
 
             pom.withXml {
                 def root = asNode()
