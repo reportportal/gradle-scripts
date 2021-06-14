@@ -22,7 +22,6 @@ buildscript {
     }
     dependencies {
         classpath "com.github.jengelman.gradle.plugins:shadow:5.2.0"
-        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4"
         classpath "net.researchgate:gradle-release:2.8.1"
     }
 }
@@ -31,7 +30,6 @@ apply plugin: 'maven-publish'
 apply plugin: 'maven'
 apply plugin: 'java'
 apply plugin: com.github.jengelman.gradle.plugins.shadow.ShadowPlugin
-apply plugin: com.jfrog.bintray.gradle.BintrayPlugin
 apply plugin: net.researchgate.release.ReleasePlugin
 
 task sourcesJar(type: Jar, dependsOn: classes) {
@@ -49,12 +47,27 @@ javadoc {
 }
 
 def pomConfig = {
+    url "https://github.com/reportportal/${project.name}"
+    packaging 'jar'
     licenses {
         license {
             name "The Apache Software License, Version 2.0"
             url "http://www.apache.org/licenses/LICENSE-2.0.txt"
             distribution "repo"
         }
+    }
+    developers {
+        developer {
+            name 'EPAM Systems'
+            email 'support@reportportal.io'
+            organization 'ReportPortal.io'
+            organizationUrl 'http://www.reportportal.io'
+        }
+    }
+    scm {
+        connection "scm:git:https://github.com/reportportal/${project.name}.git"
+        developerConnection "scm:git:ssh://git@github.com:reportportal/${project.name}.git"
+        url "https://github.com/reportportal/${project.name}/tree/master"
     }
 }
 
@@ -64,13 +77,33 @@ artifacts {
     archives shadowJar
 }
 
+project.ext.githubUserName = project.hasProperty('githubUserName') ? githubUserName : ""
+project.ext.githubToken = project.hasProperty('githubToken') ? githubToken : ""
+project.ext.publishRepo = project.hasProperty('publishRepo') ? publishRepo : ""
+
 publishing {
+    repositories {
+        maven {
+            name = "Github"
+            url = uri(publishRepo)
+            credentials {
+                username = githubUserName
+                password = githubToken
+            }
+        }
+    }
+
     publications {
         shadow(MavenPublication) { publication ->
             project.shadow.component(publication)
             
             artifact project.tasks.javadocJar
             artifact project.tasks.sourcesJar
+
+            pom {
+                name = "${project.name}"
+                description = "${project.description}"
+            }
 
             pom.withXml {
                 def root = asNode()
@@ -81,6 +114,7 @@ publishing {
                 }.each() {
                     it.scope*.value = 'compile'
                 }
+                root.children().last() + pomConfig
             }
 
             groupId 'com.epam.reportportal'
@@ -90,23 +124,4 @@ publishing {
     }
 }
 
-bintray {
-    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
-    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
-    publications = ['shadow']
-    publish = true
-    pkg {
-        repo = 'reportportal'
-        name = "$project.name"
-        desc = "$project.description"
-        websiteUrl = 'https://reportportal.github.io/'
-        issueTrackerUrl = "https://github.com/reportportal/$project.name/issues"
-        vcsUrl = "https://github.com/reportportal/$project.name"
-        githubRepo = "reportportal/$project.name"
-        githubReleaseNotesFile = 'CHANGELOG.md'
-
-        userOrg = 'epam'
-        licenses = ['Apache-2.0']
-    }
-}
-afterReleaseBuild.dependsOn bintrayUpload
+afterReleaseBuild.dependsOn publish
