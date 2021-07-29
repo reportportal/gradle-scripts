@@ -35,7 +35,7 @@ docker {
 def devPostfix = releaseMode ? '' : '-dev'
 def imageVersion = releaseMode ? "$version" : 'latest'
 def dockerProjectName = "reportportal${devPostfix}/${project.name}".toLowerCase()
-def maintainer = 'Andrei Varabyeu <andrei_varabyeu@epam.com>'
+def maintainer = 'Andrei Varabyeu <andrei_varabyeu@epam.com>, Hleb Kanonik <hleb_kanonik@epam.com>'
 def artifact = "$project.name-$project.version-exec.jar"
 def startScriptCommand = "echo \'exec java \${JAVA_OPTS} -jar $artifact\' > /start.sh && chmod +x /start.sh"
 def commandSeparator = ' && \\\n\t'
@@ -59,7 +59,7 @@ task createDockerfileDev(type: Dockerfile) {
                 "echo '${sealightsSession}' > /sealights-session.txt" + commandSeparator
     }
 
-    from('openjdk:11-jre-slim')
+    from('alpine:latest')
     label(['version'           : "$project.version",
            'description'       : "$project.description",
            'maintainer'        : "$maintainer",
@@ -87,7 +87,7 @@ task createDockerfile(type: Dockerfile) {
     }
     command += startScriptCommand + commandSeparator + downloadJarCommand
 
-    from('openjdk:11-jre-slim')
+    from('alpine:latest')
     label(['version'    : "$project.version",
            'description': "$project.description",
            'maintainer' : "$maintainer"]
