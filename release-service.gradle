@@ -70,12 +70,12 @@ def pomConfig = {
     scm {
         connection "scm:git:https://github.com/reportportal/${project.name}.git"
         developerConnection "scm:git:ssh://git@github.com:reportportal/${project.name}.git"
-        url "https://github.com/reportportal/${project.name}/tree/master"
+        url "https://github.com/reportportal/${project.name}/tree/5.6.1"
     }
 }
 
 release {
-    pushReleaseVersionBranch = 'master'
+    pushReleaseVersionBranch = '5.6.1'
 }
 
 project.ext.githubUserName = project.hasProperty('githubUserName') ? githubUserName : ""
