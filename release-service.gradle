@@ -75,9 +75,9 @@ def pomConfig = {
 }
 
 release {
-    pushReleaseVersionBranch = '5.6.1'
+    pushReleaseVersionBranch = '5.6.3'
     git {
-        requireBranch = '5.6.1'
+        requireBranch = '5.6.3'
     }
 }
 

@@ -67,7 +67,7 @@ def pomConfig = {
     scm {
         connection "scm:git:https://github.com/reportportal/${project.name}.git"
         developerConnection "scm:git:ssh://git@github.com:reportportal/${project.name}.git"
-        url "https://github.com/reportportal/${project.name}/tree/5.6.1"
+        url "https://github.com/reportportal/${project.name}/tree/5.6.3"
     }
 }
 
