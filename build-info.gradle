@@ -37,7 +37,7 @@ task gitInfo() {
         def repo = grgit.remote.list().collect { remote ->
             def url = remote.url
             def gitPostfix = url.indexOf(".git")
-            return url.substring(url.indexOf(":") + 1, gitPostfix == -1 ? url.length() : gitPostfix)
+            return url.substring(url.indexOf("reportportal"), gitPostfix == -1 ? url.length() : gitPostfix)
         }.unique(false).getAt(0)
 
         project.properties.ext.set("branch", branch)
