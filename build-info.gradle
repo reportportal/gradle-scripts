@@ -29,7 +29,7 @@ apply plugin: org.ajoberstar.grgit.gradle.GrgitPlugin
 
 import org.ajoberstar.grgit.Grgit
 
-def repoPattern = /(?<=\/|:){1}[^\/]+\/[^\/]+(?=\.git)/
+def repoPattern = /(?<=\/|:){1}[^\/]+\/[^\/\.]+(?=(?:\.git)|$)/
 
 task gitInfo() {
     doLast {
