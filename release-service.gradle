@@ -107,10 +107,10 @@ publishing {
                 description = "${project.description}"
             }
 
-            pom.withXml {
-                def root = asNode()
-                root.children().last() + pomConfig
-            }
+//            pom.withXml {
+//                def root = asNode()
+//                root.children().last() + pomConfig
+//            }
             artifact sourcesJar
             artifact javadocJar
             artifact bootJar
