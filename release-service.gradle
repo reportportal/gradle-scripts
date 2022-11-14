@@ -52,7 +52,7 @@ artifacts {
 }
 
 def pomConfig = {
-    url "https://github.com/reportportal/${project.name}"
+//    url "https://github.com/reportportal/${project.name}"
     packaging 'jar'
     licenses {
         license {
