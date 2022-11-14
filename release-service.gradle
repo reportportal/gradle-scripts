@@ -54,21 +54,21 @@ artifacts {
 def pomConfig = {
 //    url "https://github.com/reportportal/${project.name}"
 //    packaging 'jar'
-//    licenses {
-//        license {
-//            name "The Apache Software License, Version 2.0"
-//            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
-//            distribution "repo"
-//        }
-//    }
-//    developers {
-//        developer {
-//            name 'EPAM Systems'
-//            email 'support@reportportal.io'
-//            organization 'ReportPortal.io'
-//            organizationUrl 'http://www.reportportal.io'
-//        }
-//    }
+    licenses {
+        license {
+            name "The Apache Software License, Version 2.0"
+            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            distribution "repo"
+        }
+    }
+    developers {
+        developer {
+            name 'EPAM Systems'
+            email 'support@reportportal.io'
+            organization 'ReportPortal.io'
+            organizationUrl 'http://www.reportportal.io'
+        }
+    }
 //    scm {
 //        connection "scm:git:https://github.com/reportportal/${project.name}.git"
 //        developerConnection "scm:git:ssh://git@github.com:reportportal/${project.name}.git"
