@@ -69,11 +69,11 @@ def pomConfig = {
             organizationUrl 'http://www.reportportal.io'
         }
     }
-//    scm {
-//        connection "scm:git:https://github.com/reportportal/${project.name}.git"
-//        developerConnection "scm:git:ssh://git@github.com:reportportal/${project.name}.git"
-//        url "https://github.com/reportportal/${project.name}/tree/master"
-//    }
+    scm {
+        connection "scm:git:https://github.com/reportportal/${project.name}.git"
+        developerConnection "scm:git:ssh://git@github.com:reportportal/${project.name}.git"
+        url "https://github.com/reportportal/${project.name}/tree/master"
+    }
 }
 
 release {
