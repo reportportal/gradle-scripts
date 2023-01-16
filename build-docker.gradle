@@ -59,7 +59,7 @@ task createDockerfileDev(type: Dockerfile) {
                 "echo '${sealightsSession}' > /sealights-session.txt" + commandSeparator
     }
 
-    from('alpine:latest')
+    from('amazoncorretto:11.0.17')
     label(['version'           : "$project.version",
            'description'       : "$project.description",
            'maintainer'        : "$maintainer",
