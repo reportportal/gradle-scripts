@@ -25,7 +25,6 @@ buildscript {
     }
 }
 
-apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'java'
 apply plugin: net.researchgate.release.ReleasePlugin
