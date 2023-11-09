@@ -16,24 +16,26 @@
 buildscript {
     repositories {
         maven {
-            url "https://plugins.gradle.org/m2/"
+            url 'https://plugins.gradle.org/m2/'
         }
     }
     dependencies {
-        classpath "com.github.spotbugs:spotbugs-gradle-plugin:3.0.0"
+        classpath 'com.github.spotbugs.snom:spotbugs-gradle-plugin:4.8.0'
     }
 }
 
-apply plugin: com.github.spotbugs.SpotBugsPlugin
+apply plugin: com.github.spotbugs.snom.SpotBugsPlugin
 
 spotbugs {
     toolVersion = '3.1.12'
-    sourceSets = [sourceSets.main]
     effort = 'max'
     reportLevel = 'high'
 }
 
 spotbugsMain {
+    sourceDirs = files(sourceSets.main.allSource.srcDirs)
+    classDirs = files(sourceSets.main.output)
+    auxClassPaths = files(sourceSets.main.compileClasspath)
     reports {
         html.enabled(true)
         xml.enabled(false)
