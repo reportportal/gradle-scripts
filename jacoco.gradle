@@ -17,9 +17,9 @@
 apply plugin: 'jacoco'
 
 jacocoTestReport {
-    xml {
-      enabled true
-      destination file("${buildDir}/reports/jacoco/jacoco.xml")
+    reports {
+        xml.enabled true
+        xml.destination file("${buildDir}/reports/jacoco/jacoco.xml")
     }
     afterEvaluate {
         getClassDirectories().setFrom(files(classDirectories.files.collect {
