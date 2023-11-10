@@ -18,8 +18,8 @@ apply plugin: 'jacoco'
 
 jacocoTestReport {
     reports {
-        xml.enabled = true
-        xml.destination = file("${buildDir}/reports/jacoco/jacoco.xml")
+        xml.required.set(true)
+        xml.outputLocation.set(layout.buildDirectory.file("reports/jacoco/jacoco.xml"))
     }
     afterEvaluate {
         getClassDirectories().setFrom(files(classDirectories.files.collect {
