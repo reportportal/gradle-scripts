@@ -18,7 +18,11 @@ apply plugin: 'jacoco'
 
 jacocoTestReport {
     reports {
-        xml.required = true
+        if (VersionNumber.parse(gradle.gradleVersion) < VersionNumber.parse('7.1')) {
+            xml.enabled true
+        } else {
+            xml.required = true
+        }
     }
     afterEvaluate {
         getClassDirectories().setFrom(files(classDirectories.files.collect {
