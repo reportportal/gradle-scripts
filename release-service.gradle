@@ -15,6 +15,7 @@
  */
 
 import org.apache.tools.ant.filters.ReplaceTokens
+import org.gradle.util.VersionNumber
 
 buildscript {
     repositories {
