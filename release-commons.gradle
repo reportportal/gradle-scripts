@@ -30,10 +30,9 @@ buildscript {
 
 apply plugin: 'java'
 apply plugin: net.researchgate.release.ReleasePlugin
+apply plugin: 'maven-publish'
 if (VersionNumber.parse(gradle.gradleVersion) < VersionNumber.parse('7.1')) {
     apply plugin: 'maven'
-} else {
-    apply plugin: 'maven-publish'
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
