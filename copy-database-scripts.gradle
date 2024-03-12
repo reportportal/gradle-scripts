@@ -28,11 +28,17 @@ apply plugin: de.undercouch.gradle.tasks.download.DownloadTaskPlugin
 task copyTestDatabaseScripts {
     doLast {
         for (s in testScriptsSrc) {
-            download {
-                src s.key
-                dest new File("${projectDir}/src/test/resources/db/migration/${s.value}")
-                quiet releaseMode
+            File file = new File("${projectDir}/src/test/resources/db/migration/${s.value}")
+            if (!file.exists()) {
+                download {
+                    src s.key
+                    dest file
+                    quiet releaseMode
+                }
+            } else {
+                getProject().getLogger().quiet("Skipping existing file '" + file.getName())
             }
+
         }
     }
 }
