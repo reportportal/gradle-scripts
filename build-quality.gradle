@@ -25,6 +25,7 @@ buildscript {
 }
 
 apply plugin: com.github.spotbugs.SpotBugsPlugin
+import org.gradle.util.VersionNumber
 
 spotbugs {
     toolVersion = '3.1.12'
@@ -35,7 +36,13 @@ spotbugs {
 
 spotbugsMain {
     reports {
-        html.enabled(true)
-        xml.enabled(false)
+        if (VersionNumber.parse(gradle.gradleVersion) < VersionNumber.parse('7.1')) {
+            html.enabled true
+            xml.enabled false
+
+        } else {
+            html.required = true
+            xml.required = false
+        }
     }
 }
