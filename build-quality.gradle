@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import org.gradle.util.VersionNumber
+
 buildscript {
     repositories {
         maven {
@@ -20,12 +22,11 @@ buildscript {
         }
     }
     dependencies {
-        classpath "com.github.spotbugs:spotbugs-gradle-plugin:4.8.6"
+        classpath "com.github.spotbugs.snom:spotbugs-gradle-plugin:6.0.19"
     }
 }
 
-apply plugin: com.github.spotbugs.SpotBugsPlugin
-import org.gradle.util.VersionNumber
+apply plugin: "com.github.spotbugs"
 
 spotbugs {
     toolVersion = '4.8.6'
