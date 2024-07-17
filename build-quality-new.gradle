@@ -30,7 +30,7 @@ buildscript {
 apply plugin: com.github.spotbugs-base
 
 spotbugs {
-    toolVersion = '6.0.19'
+    toolVersion = '4.8.6'
     sourceSets = [sourceSets.main]
     effort = 'max'
     reportLevel = 'high'
