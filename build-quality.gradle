@@ -37,6 +37,8 @@ spotbugs {
 
 spotbugsMain {
     reports {
+        println "grdl ver = " + VersionNumber.parse(gradle.gradleVersion)
+        println "bool ver = " + VersionNumber.parse(gradle.gradleVersion) < VersionNumber.parse('7.1')
         if (VersionNumber.parse(gradle.gradleVersion) < VersionNumber.parse('7.1')) {
             html.enabled(true)
             xml.enabled(false)
