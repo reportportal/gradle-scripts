@@ -18,15 +18,15 @@ import org.gradle.util.VersionNumber
 buildscript {
     repositories {
         maven {
-            url = uri("https://plugins.gradle.org/m2/")
+            url "https://plugins.gradle.org/m2/"
         }
     }
     dependencies {
-        classpath("com.github.spotbugs.snom:spotbugs-gradle-plugin:4.8.0")
+        classpath "com.github.spotbugs:spotbugs-gradle-plugin:3.0.0"
     }
 }
 
-apply(plugin = "com.github.spotbugs")
+apply plugin: com.github.spotbugs.SpotBugsPlugin
 
 spotbugs {
     toolVersion = '3.1.12'
@@ -38,8 +38,8 @@ spotbugs {
 spotbugsMain {
     reports {
         if (VersionNumber.parse(gradle.gradleVersion) < VersionNumber.parse('7.1')) {
-            html.required(true)
-            xml.required(false)
+            html.enabled(true)
+            xml.enabled(false)
 
         } else {
             html.required = true
