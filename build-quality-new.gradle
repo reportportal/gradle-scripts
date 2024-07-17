@@ -16,12 +16,21 @@
 
 // Version compatible with Gradle 7.1+
 
-plugins {
-    id("com.github.spotbugs") version "5.2.5"
+buildscript {
+    repositories {
+        maven {
+            url = uri("https://plugins.gradle.org/m2/")
+        }
+    }
+    dependencies {
+        classpath("com.github.spotbugs.snom:spotbugs-gradle-plugin:6.0.19")
+    }
 }
 
+apply(plugin = "com.github.spotbugs-base")
+
 spotbugs {
-    toolVersion = '5.2.5'
+    toolVersion = '6.0.19'
     sourceSets = [sourceSets.main]
     effort = 'max'
     reportLevel = 'high'
