@@ -27,7 +27,7 @@ buildscript {
     }
 }
 
-apply(plugin = "com.github.spotbugs-base")
+apply plugin: com.github.spotbugs-base.SpotBugsPlugin
 
 spotbugs {
     toolVersion = '6.0.19'
