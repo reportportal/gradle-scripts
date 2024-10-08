@@ -33,15 +33,21 @@ def repoPattern = /(?<=\/|:){1}[^\/]+\/[^\/\.]+(?=(?:\.git)|$)/
 
 task gitInfo() {
     doLast {
-        def grgit = Grgit.open(dir: project.projectDir.toString())
-        def branch = grgit.branch.getCurrent().getName() + '-' + grgit.head().id
-        def repo = grgit.remote.list().collect { remote -> (remote.url =~ repoPattern)[0]}.unique(false).getAt(0)
+        try {
+            def grgit = Grgit.open(dir: project.projectDir.toString())
+            def branch = grgit.branch.getCurrent().getName() + '-' + grgit.head().id
+            def repo = grgit.remote.list().collect { remote -> (remote.url =~ repoPattern)[0]}.unique(false).getAt(0)
 
-        project.properties.ext.set("branch", branch)
-        project.properties.ext.set("repo", repo)
+            project.properties.ext.set("branch", branch)
+            project.properties.ext.set("repo", repo)
 
-        def buildNumber = !releaseMode && project.hasProperty("buildNumber") && project.buildNumber?.trim() ? "-$project.buildNumber" : ''
-        project.properties.ext.set('buildNumber', buildNumber)
+            def buildNumber = !releaseMode && project.hasProperty("buildNumber") && project.buildNumber?.trim() ? "-$project.buildNumber" : ''
+            project.properties.ext.set('buildNumber', buildNumber)
+        } catch (Exception) {
+            project.properties.ext.set("branch", '')
+            project.properties.ext.set("repo", '')
+            project.properties.ext.set("buildNumber", '')
+        }
     }
 }
 
