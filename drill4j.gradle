@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
-plugins {
-    id "com.epam.drill.integration.cicd" version "0.1.6"
+apply plugin: 'com.epam.drill.integration.cicd'
+
+pluginManagement {
+    plugins {
+        id 'com.epam.drill.integration.cicd' version '0.1.6'
+    }
 }
 
 drill {
