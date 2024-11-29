@@ -21,7 +21,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "com.github.jengelman.gradle.plugins:shadow:6.1.0"
+        classpath "com.github.johnrengelman.shadow:com.github.johnrengelman.shadow.gradle.plugin:8.1.1"
         classpath "net.researchgate:gradle-release:3.0.2"
     }
 }
