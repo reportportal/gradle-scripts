@@ -19,6 +19,7 @@ buildscript {
         maven {
             url "https://plugins.gradle.org/m2/"
         }
+        gradlePluginPortal()
     }
     dependencies {
         classpath "com.gradleup.shadow:shadow-gradle-plugin:8.3.5"
