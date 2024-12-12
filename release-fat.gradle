@@ -28,7 +28,7 @@ buildscript {
 
 apply plugin: 'maven-publish'
 apply plugin: 'java'
-apply plugin: com.github.jengelman.gradle.plugins.shadow.ShadowPlugin
+apply plugin: 'com.gradleup.shadow'
 apply plugin: net.researchgate.release.ReleasePlugin
 
 task sourcesJar(type: Jar, dependsOn: classes) {
