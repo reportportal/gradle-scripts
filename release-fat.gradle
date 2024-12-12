@@ -19,7 +19,6 @@ buildscript {
         maven {
             url "https://plugins.gradle.org/m2/"
         }
-        gradlePluginPortal()
     }
     dependencies {
         classpath "com.gradleup.shadow:shadow-gradle-plugin:8.3.5"
@@ -29,7 +28,7 @@ buildscript {
 
 apply plugin: 'maven-publish'
 apply plugin: 'java'
-apply plugin: 'com.gradleup.shadow'
+apply plugin: com.github.jengelman.gradle.plugins.shadow.ShadowPlugin
 apply plugin: net.researchgate.release.ReleasePlugin
 
 task sourcesJar(type: Jar, dependsOn: classes) {
