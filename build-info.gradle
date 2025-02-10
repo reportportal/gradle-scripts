@@ -34,9 +34,8 @@ def repoPattern = /(?<=\/|:){1}[^\/]+\/[^\/\.]+(?=(?:\.git)|$)/
 task gitInfo() {
     doLast {
         try {
-            def grgit = Grgit.open(dir: project.projectDir.toString())
-            def branch = grgit.branch.getCurrent().getName() + '-' + grgit.head().id
-            def repo = grgit.remote.list().collect { remote -> (remote.url =~ repoPattern)[0]}.unique(false).getAt(0)
+            def branch = getCurrentGitBranch()
+            def repo = getCurrentRepo()
 
             project.properties.ext.set("branch", branch)
             project.properties.ext.set("repo", repo)
@@ -65,4 +64,14 @@ task removeDockerfileFromGit {
             patterns = ['Dockerfile']
         }
     }
+}
+
+def getCurrentGitBranch() {
+    def grgit = Grgit.open(dir: project.projectDir.toString())
+    return grgit.branch.getCurrent().getName() + '-' + grgit.head().id
+}
+
+def getCurrentRepo() {
+    def grgit = Grgit.open(dir: project.projectDir.toString())
+    return grgit.remote.list().collect { remote -> (remote.url =~ repoPattern)[0]}.unique(false).getAt(0)
 }
