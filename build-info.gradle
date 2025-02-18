@@ -68,8 +68,13 @@ task removeDockerfileFromGit {
 }
 
 def getCurrentGitBranch() {
-    def grgit = Grgit.open(dir: project.projectDir.toString())
-    return grgit.branch.getCurrent().getName() + '-' + grgit.head().id
+    try {
+        def grgit = Grgit.open(dir: project.projectDir.toString())
+        return grgit.branch.getCurrent().getName() + '-' + grgit.head().id
+    }
+    catch (Exception) {
+        return ""
+    }
 }
 
 ext {
