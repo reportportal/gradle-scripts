@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import org.apache.tools.ant.filters.ReplaceTokens
-
 buildscript {
     repositories {
         maven {
-            url "https://plugins.gradle.org/m2/"
+            url = "https://plugins.gradle.org/m2/"
         }
     }
     dependencies {
@@ -45,9 +42,8 @@ javadoc {
     failOnError = false
 }
 
-artifacts {
-    archives sourcesJar
-    archives javadocJar
+tasks.named('assemble') {
+    dependsOn(sourcesJar, javadocJar)
 }
 
 def pomConfig = {
@@ -98,8 +94,8 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
-            groupId 'com.epam.reportportal'
-            artifactId "$project.name"
+            groupId = 'com.epam.reportportal'
+            artifactId = "$project.name"
 
             pom {
                 name = "${project.name}"

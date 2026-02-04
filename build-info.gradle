@@ -17,7 +17,7 @@
 buildscript {
     repositories {
         maven {
-            url "https://plugins.gradle.org/m2/"
+            url = "https://plugins.gradle.org/m2/"
         }
     }
     dependencies {
@@ -32,21 +32,26 @@ import org.ajoberstar.grgit.Grgit
 def repoPattern = /(?<=\/|:){1}[^\/]+\/[^\/\.]+(?=(?:\.git)|$)/
 
 task gitInfo() {
+    def projectDir = project.projectDir
+    def projectProps = project.properties
+    def hasProperty = project.hasProperty("buildNumber")
+    def buildNumberProp = hasProperty ? project.buildNumber : null
+
     doLast {
         try {
-            def grgit = Grgit.open(dir: project.projectDir.toString())
+            def grgit = Grgit.open(dir: projectDir.toString())
             def branch = grgit.branch.getCurrent().getName() + '-' + grgit.head().id
-            def repo = grgit.remote.list().collect { remote -> (remote.url =~ repoPattern)[0]}.unique(false).getAt(0)
+            def repo = grgit.remote.list().collect { remote -> (remote.url =~ repoPattern)[0] }.unique(false).getAt(0)
 
-            project.properties.ext.set("branch", branch)
-            project.properties.ext.set("repo", repo)
+            projectProps.ext.set("branch", branch)
+            projectProps.ext.set("repo", repo)
 
-            def buildNumber = !releaseMode && project.hasProperty("buildNumber") && project.buildNumber?.trim() ? "-$project.buildNumber" : ''
-            project.properties.ext.set('buildNumber', buildNumber)
-        } catch (Exception) {
-            project.properties.ext.set("branch", '')
-            project.properties.ext.set("repo", '')
-            project.properties.ext.set("buildNumber", '')
+            def buildNumber = !releaseMode && hasProperty && buildNumberProp?.trim() ? "-$buildNumberProp" : ''
+            projectProps.ext.set('buildNumber', buildNumber)
+        } catch (ignored) {
+            projectProps.ext.set("branch", '')
+            projectProps.ext.set("repo", '')
+            projectProps.ext.set("buildNumber", '')
         }
     }
 }
