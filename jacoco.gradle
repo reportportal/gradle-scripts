@@ -16,6 +16,8 @@
 
 apply plugin: 'jacoco'
 
+import groovy.util.XmlParser
+
 jacocoTestReport {
     reports {
         xml.required = true
@@ -37,8 +39,8 @@ jacocoTestReport {
         def results = parser.parse(report)
 
         def percentage = {
-            def covered = it == null? 1D : it.'@covered' as Double
-            def missed = it == null? 0D : it.'@missed' as Double
+            def covered = it == null ? 1D : it.'@covered' as Double
+            def missed = it == null ? 0D : it.'@missed' as Double
             ((covered / (covered + missed)) * 100).round(2)
         }
 
