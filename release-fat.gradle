@@ -17,7 +17,7 @@
 buildscript {
     repositories {
         maven {
-            url "https://plugins.gradle.org/m2/"
+            url = "https://plugins.gradle.org/m2/"
         }
     }
     dependencies {
@@ -70,11 +70,7 @@ def pomConfig = {
     }
 }
 
-artifacts {
-    archives sourcesJar
-    archives javadocJar
-    archives shadowJar
-}
+assemble.dependsOn sourcesJar, javadocJar, shadowJar
 
 project.ext.githubUserName = project.hasProperty('githubUserName') ? githubUserName : ""
 project.ext.githubToken = project.hasProperty('githubToken') ? githubToken : ""
@@ -116,8 +112,8 @@ publishing {
                 root.children().last() + pomConfig
             }
 
-            groupId 'com.epam.reportportal'
-            artifactId "$project.name"
+            groupId = 'com.epam.reportportal'
+            artifactId = "$project.name"
 
         }
     }
