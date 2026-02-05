@@ -21,7 +21,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "net.researchgate:gradle-release:2.8.1"
+        classpath "net.researchgate:gradle-release:3.1.0"
     }
 }
 
@@ -88,8 +88,7 @@ publishing {
 
     publications {
         shadow(MavenPublication) { publication ->
-            project.shadow.component(publication)
-
+            artifact shadowJar
             artifact project.tasks.javadocJar
             artifact project.tasks.sourcesJar
 
