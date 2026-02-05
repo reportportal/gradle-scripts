@@ -21,14 +21,12 @@ buildscript {
         }
     }
     dependencies {
-        classpath "com.github.johnrengelman.shadow:com.github.johnrengelman.shadow.gradle.plugin:8.1.1"
         classpath "net.researchgate:gradle-release:2.8.1"
     }
 }
 
 apply plugin: 'maven-publish'
 apply plugin: 'java'
-apply plugin: com.github.jengelman.gradle.plugins.shadow.ShadowPlugin
 apply plugin: net.researchgate.release.ReleasePlugin
 
 task sourcesJar(type: Jar, dependsOn: classes) {
@@ -91,7 +89,7 @@ publishing {
     publications {
         shadow(MavenPublication) { publication ->
             project.shadow.component(publication)
-            
+
             artifact project.tasks.javadocJar
             artifact project.tasks.sourcesJar
 
