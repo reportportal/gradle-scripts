@@ -17,16 +17,18 @@
 buildscript {
     repositories {
         maven {
-            url = "https://plugins.gradle.org/m2/"
+            url "https://plugins.gradle.org/m2/"
         }
     }
     dependencies {
-        classpath "net.researchgate:gradle-release:3.1.0"
+        classpath "com.github.johnrengelman.shadow:com.github.johnrengelman.shadow.gradle.plugin:8.1.1"
+        classpath "net.researchgate:gradle-release:2.8.1"
     }
 }
 
 apply plugin: 'maven-publish'
 apply plugin: 'java'
+apply plugin: com.github.jengelman.gradle.plugins.shadow.ShadowPlugin
 apply plugin: net.researchgate.release.ReleasePlugin
 
 task sourcesJar(type: Jar, dependsOn: classes) {
@@ -68,7 +70,11 @@ def pomConfig = {
     }
 }
 
-assemble.dependsOn sourcesJar, javadocJar, shadowJar
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+    archives shadowJar
+}
 
 project.ext.githubUserName = project.hasProperty('githubUserName') ? githubUserName : ""
 project.ext.githubToken = project.hasProperty('githubToken') ? githubToken : ""
@@ -88,7 +94,8 @@ publishing {
 
     publications {
         shadow(MavenPublication) { publication ->
-            artifact shadowJar
+            project.shadow.component(publication)
+
             artifact project.tasks.javadocJar
             artifact project.tasks.sourcesJar
 
@@ -109,8 +116,8 @@ publishing {
                 root.children().last() + pomConfig
             }
 
-            groupId = 'com.epam.reportportal'
-            artifactId = "$project.name"
+            groupId 'com.epam.reportportal'
+            artifactId "$project.name"
 
         }
     }
