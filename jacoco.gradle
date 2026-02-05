@@ -28,7 +28,7 @@ jacocoTestReport {
     }
 
     doLast {
-        def report = file("${reportsDir}/jacoco/test/jacocoTestReport.xml" as Object)
+        def report = reports.xml.outputLocation.get().asFile
         logger.lifecycle("Checking coverage results: ${report}")
 
         def parser = new groovy.xml.XmlParser()
