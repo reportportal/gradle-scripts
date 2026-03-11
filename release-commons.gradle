@@ -16,6 +16,7 @@
 
 buildscript {
     repositories {
+        mavenCentral()
         maven {
             url = "https://plugins.gradle.org/m2/"
         }
@@ -45,28 +46,28 @@ javadoc {
 
 assemble.dependsOn sourcesJar, javadocJar
 
-def pomConfig = {
-    url = "https://github.com/reportportal/${project.name}"
-    packaging = 'jar'
-    licenses {
-        license {
-            name = "The Apache Software License, Version 2.0"
-            url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            distribution = "repo"
+def configurePom = { pom ->
+    pom.url = "https://github.com/reportportal/${project.name}"
+    pom.packaging = 'jar'
+    pom.licenses { licenses ->
+        licenses.license { license ->
+            license.name = "The Apache Software License, Version 2.0"
+            license.url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            license.distribution = "repo"
         }
     }
-    developers {
-        developer {
-            name = 'EPAM Systems'
-            email = 'support@reportportal.io'
-            organization = 'ReportPortal.io'
-            organizationUrl = 'http://www.reportportal.io'
+    pom.developers { developers ->
+        developers.developer { developer ->
+            developer.name = 'EPAM Systems'
+            developer.email = 'support@reportportal.io'
+            developer.organization = 'ReportPortal.io'
+            developer.organizationUrl = 'http://www.reportportal.io'
         }
     }
-    scm {
-        connection = "scm:git:https://github.com/reportportal/${project.name}.git"
-        developerConnection = "scm:git:ssh://git@github.com:reportportal/${project.name}.git"
-        url = "https://github.com/reportportal/${project.name}/tree/master"
+    pom.scm { scm ->
+        scm.connection = "scm:git:https://github.com/reportportal/${project.name}.git"
+        scm.developerConnection = "scm:git:ssh://git@github.com:reportportal/${project.name}.git"
+        scm.url = "https://github.com/reportportal/${project.name}/tree/master"
     }
 }
 
@@ -92,14 +93,10 @@ publishing {
             groupId = 'com.epam.reportportal'
             artifactId = "$project.name"
 
-            pom {
-                name = "${project.name}"
-                description = "${project.description}"
-            }
-
-            pom.withXml {
-                def root = asNode()
-                root.children().last() + pomConfig
+            pom { pom ->
+                pom.name = "${project.name}"
+                pom.description = "${project.description}"
+                configurePom(pom)
             }
             artifact sourcesJar
             artifact javadocJar
