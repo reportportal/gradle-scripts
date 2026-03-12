@@ -74,6 +74,11 @@ tasks.named('shadowJar') {
     archiveClassifier.set('')
 }
 
+// Disable the regular jar task to avoid conflict with shadowJar
+tasks.named('jar') {
+    enabled = false
+}
+
 assemble.dependsOn sourcesJar, javadocJar, shadowJar
 
 project.ext.githubUserName = project.hasProperty('githubUserName') ? githubUserName : ""
