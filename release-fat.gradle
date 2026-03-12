@@ -69,6 +69,10 @@ def configurePom = { pom ->
     }
 }
 
+tasks.named('shadowJar') {
+    archiveClassifier.set('')
+}
+
 assemble.dependsOn sourcesJar, javadocJar, shadowJar
 
 project.ext.githubUserName = project.hasProperty('githubUserName') ? githubUserName : ""
@@ -89,9 +93,12 @@ publishing {
 
     publications {
         shadow(MavenPublication) { publication ->
-            from components.java
-            
-            artifacts = [project.tasks.shadowJar, project.tasks.javadocJar, project.tasks.sourcesJar]
+            artifact project.tasks.shadowJar
+            artifact project.tasks.javadocJar
+            artifact project.tasks.sourcesJar
+
+            groupId = 'com.epam.reportportal'
+            artifactId = "$project.name"
 
             pom { pom ->
                 pom.name = "${project.name}"
@@ -101,17 +108,18 @@ publishing {
 
             pom.withXml {
                 def root = asNode()
-                root.dependencies.'*'.findAll() {
-                    it.scope.text() == 'runtime' && project.configurations.shadow.allDependencies.find { dep ->
-                        dep.name == it.artifactId.text()
+                
+                def dependenciesNode = root.appendNode('dependencies')
+                project.configurations.runtimeClasspath.allDependencies.each { dep ->
+                    if (dep.group != null && dep.name != null && dep.version != null) {
+                        def dependencyNode = dependenciesNode.appendNode('dependency')
+                        dependencyNode.appendNode('groupId', dep.group)
+                        dependencyNode.appendNode('artifactId', dep.name)
+                        dependencyNode.appendNode('version', dep.version)
+                        dependencyNode.appendNode('scope', 'compile')
                     }
-                }.each() {
-                    it.scope*.value = 'compile'
                 }
             }
-
-            groupId = 'com.epam.reportportal'
-            artifactId = "$project.name"
 
         }
     }
