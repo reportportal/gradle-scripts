@@ -69,6 +69,7 @@ def configurePom = { pom ->
     }
 }
 
+// Configure shadowJar to have no classifier (produces plugin-name-version.jar)
 tasks.named('shadowJar') {
     archiveClassifier.set('')
 }
@@ -93,7 +94,7 @@ publishing {
 
     publications {
         shadow(MavenPublication) { publication ->
-            artifact project.tasks.shadowJar
+            from components.shadow
             artifact project.tasks.javadocJar
             artifact project.tasks.sourcesJar
 
@@ -105,22 +106,6 @@ publishing {
                 pom.description = "${project.description}"
                 configurePom(pom)
             }
-
-            pom.withXml {
-                def root = asNode()
-                
-                def dependenciesNode = root.appendNode('dependencies')
-                project.configurations.runtimeClasspath.allDependencies.each { dep ->
-                    if (dep.group != null && dep.name != null && dep.version != null) {
-                        def dependencyNode = dependenciesNode.appendNode('dependency')
-                        dependencyNode.appendNode('groupId', dep.group)
-                        dependencyNode.appendNode('artifactId', dep.name)
-                        dependencyNode.appendNode('version', dep.version)
-                        dependencyNode.appendNode('scope', 'compile')
-                    }
-                }
-            }
-
         }
     }
 }
