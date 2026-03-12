@@ -89,8 +89,9 @@ publishing {
 
     publications {
         shadow(MavenPublication) { publication ->
-            from components.shadow
+            project.shadow.component(publication)
 
+            artifact project.tasks.shadowJar
             artifact project.tasks.javadocJar
             artifact project.tasks.sourcesJar
 
