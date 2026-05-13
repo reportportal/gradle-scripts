@@ -1,11 +1,11 @@
 /*
- * Copyright 2019 EPAM Systems
+ * Copyright 2026 EPAM Systems
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -46,31 +46,6 @@ javadoc {
 
 assemble.dependsOn sourcesJar, javadocJar
 
-def configurePom = { pom ->
-    pom.url = "https://github.com/reportportal/${project.name}"
-    pom.packaging = 'jar'
-    pom.licenses { licenses ->
-        licenses.license { license ->
-            license.name = "The Apache Software License, Version 2.0"
-            license.url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            license.distribution = "repo"
-        }
-    }
-    pom.developers { developers ->
-        developers.developer { developer ->
-            developer.name = 'EPAM Systems'
-            developer.email = 'support@reportportal.io'
-            developer.organization = 'ReportPortal.io'
-            developer.organizationUrl = 'http://www.reportportal.io'
-        }
-    }
-    pom.scm { scm ->
-        scm.connection = "scm:git:https://github.com/reportportal/${project.name}.git"
-        scm.developerConnection = "scm:git:ssh://git@github.com:reportportal/${project.name}.git"
-        scm.url = "https://github.com/reportportal/${project.name}/tree/master"
-    }
-}
-
 project.ext.githubUserName = project.hasProperty('githubUserName') ? githubUserName : ""
 project.ext.githubToken = project.hasProperty('githubToken') ? githubToken : ""
 project.ext.publishRepo = project.hasProperty('publishRepo') ? publishRepo : ""
@@ -93,10 +68,33 @@ publishing {
             groupId = 'com.epam.reportportal'
             artifactId = "$project.name"
 
-            pom { pom ->
-                pom.name = "${project.name}"
-                pom.description = "${project.description}"
-                configurePom(pom)
+            pom {
+                name = "${project.name}"
+                description = "${project.description}"
+                url = "https://github.com/reportportal/${project.name}"
+                licenses {
+                    license {
+                        name = "The Apache Software License, Version 2.0"
+                        url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+                        distribution = "repo"
+                    }
+                }
+                developers {
+                    developer {
+                        name = 'EPAM Systems'
+                        email = 'support@reportportal.io'
+                        organization = 'ReportPortal.io'
+                        organizationUrl = 'https://www.reportportal.io'
+                    }
+                }
+                scm {
+                    connection = "scm:git:https://github.com/reportportal/${project.name}.git"
+                    developerConnection = "scm:git:ssh://git@github.com:reportportal/${project.name}.git"
+                    url = "https://github.com/reportportal/${project.name}/tree/master"
+                }
+            }
+            pom.withXml {
+                asNode().appendNode('packaging', 'jar')
             }
             artifact sourcesJar
             artifact javadocJar
