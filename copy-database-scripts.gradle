@@ -19,7 +19,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "de.undercouch:gradle-download-task:4.0.2"
+        classpath "de.undercouch:gradle-download-task:5.7.0"
     }
 }
 
@@ -30,13 +30,13 @@ task copyTestDatabaseScripts {
         for (s in testScriptsSrc) {
             File file = new File("${projectDir}/src/test/resources/db/migration/${s.value}")
             if (!file.exists()) {
-                download {
+                download.run {
                     src s.key
                     dest file
                     quiet releaseMode
                 }
             } else {
-                getProject().getLogger().quiet("Skipped existing file '" + file.getName() + "'")
+                logger.quiet("Skipped existing file '" + file.getName() + "'")
             }
 
         }

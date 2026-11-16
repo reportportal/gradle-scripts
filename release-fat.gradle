@@ -16,19 +16,18 @@
 
 buildscript {
     repositories {
+        mavenCentral()
         maven {
-            url "https://plugins.gradle.org/m2/"
+            url = "https://plugins.gradle.org/m2/"
         }
     }
     dependencies {
-        classpath "com.github.johnrengelman.shadow:com.github.johnrengelman.shadow.gradle.plugin:8.1.1"
         classpath "net.researchgate:gradle-release:2.8.1"
     }
 }
 
 apply plugin: 'maven-publish'
 apply plugin: 'java'
-apply plugin: com.github.jengelman.gradle.plugins.shadow.ShadowPlugin
 apply plugin: net.researchgate.release.ReleasePlugin
 
 task sourcesJar(type: Jar, dependsOn: classes) {
@@ -45,36 +44,42 @@ javadoc {
     failOnError = false
 }
 
-def pomConfig = {
-    url "https://github.com/reportportal/${project.name}"
-    packaging 'jar'
-    licenses {
-        license {
-            name "The Apache Software License, Version 2.0"
-            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            distribution "repo"
+def configurePom = { pom ->
+    pom.url = "https://github.com/reportportal/${project.name}"
+    pom.packaging = 'jar'
+    pom.licenses { licenses ->
+        licenses.license { license ->
+            license.name = "The Apache Software License, Version 2.0"
+            license.url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            license.distribution = "repo"
         }
     }
-    developers {
-        developer {
-            name 'EPAM Systems'
-            email 'support@reportportal.io'
-            organization 'ReportPortal.io'
-            organizationUrl 'http://www.reportportal.io'
+    pom.developers { developers ->
+        developers.developer { developer ->
+            developer.name = 'EPAM Systems'
+            developer.email = 'support@reportportal.io'
+            developer.organization = 'ReportPortal.io'
+            developer.organizationUrl = 'http://www.reportportal.io'
         }
     }
-    scm {
-        connection "scm:git:https://github.com/reportportal/${project.name}.git"
-        developerConnection "scm:git:ssh://git@github.com:reportportal/${project.name}.git"
-        url "https://github.com/reportportal/${project.name}/tree/master"
+    pom.scm { scm ->
+        scm.connection = "scm:git:https://github.com/reportportal/${project.name}.git"
+        scm.developerConnection = "scm:git:ssh://git@github.com:reportportal/${project.name}.git"
+        scm.url = "https://github.com/reportportal/${project.name}/tree/master"
     }
 }
 
-artifacts {
-    archives sourcesJar
-    archives javadocJar
-    archives shadowJar
+// Configure shadowJar to have no classifier (produces plugin-name-version.jar)
+tasks.named('shadowJar') {
+    archiveClassifier.set('')
 }
+
+// Disable the regular jar task to avoid conflict with shadowJar
+tasks.named('jar') {
+    enabled = false
+}
+
+assemble.dependsOn sourcesJar, javadocJar, shadowJar
 
 project.ext.githubUserName = project.hasProperty('githubUserName') ? githubUserName : ""
 project.ext.githubToken = project.hasProperty('githubToken') ? githubToken : ""
@@ -94,31 +99,18 @@ publishing {
 
     publications {
         shadow(MavenPublication) { publication ->
-            project.shadow.component(publication)
-            
+            from components.shadow
             artifact project.tasks.javadocJar
             artifact project.tasks.sourcesJar
 
-            pom {
-                name = "${project.name}"
-                description = "${project.description}"
+            groupId = 'com.epam.reportportal'
+            artifactId = "$project.name"
+
+            pom { pom ->
+                pom.name = "${project.name}"
+                pom.description = "${project.description}"
+                configurePom(pom)
             }
-
-            pom.withXml {
-                def root = asNode()
-                root.dependencies.'*'.findAll() {
-                    it.scope.text() == 'runtime' && project.configurations.shadow.allDependencies.find { dep ->
-                        dep.name == it.artifactId.text()
-                    }
-                }.each() {
-                    it.scope*.value = 'compile'
-                }
-                root.children().last() + pomConfig
-            }
-
-            groupId 'com.epam.reportportal'
-            artifactId "$project.name"
-
         }
     }
 }
